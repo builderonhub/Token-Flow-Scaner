@@ -208,10 +208,11 @@ h2 {
 
 .signals-table th,
 .signals-table td {
-  padding: 12px 8px;
-  overflow-wrap: anywhere;
+  padding: 12px 4px;
+  text-align: center;
+  overflow-wrap: normal;
   white-space: normal;
-  vertical-align: top;
+  vertical-align: middle;
 }
 
 .signals-table th {
@@ -231,6 +232,12 @@ h2 {
 
 .signals-table th:nth-child(13) {
   width: 25%;
+  text-align: left;
+}
+
+.signals-table td:nth-child(13) {
+  text-align: left;
+  overflow-wrap: anywhere;
 }
 
 .signals-table th:nth-child(14) {
