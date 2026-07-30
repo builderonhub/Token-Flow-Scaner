@@ -214,16 +214,18 @@ document.head.insertAdjacentHTML(
       }
 
       .reason-cell {
-        width: 360px;
-        min-width: 360px;
+        width: auto;
+        min-width: 0;
         white-space: normal;
       }
 
       .reason-text {
-        max-width: 360px;
+        max-width: none;
         color: #8993a6;
         font-size: 11px;
         line-height: 1.5;
+        overflow-wrap: anywhere;
+        white-space: normal;
       }
 
       .roi-positive {
@@ -374,8 +376,8 @@ app.innerHTML = `
         </div>
       </div>
 
-      <div class="table-wrapper">
-        <table>
+      <div class="table-wrapper signals-table-wrapper">
+        <table class="signals-table">
           <thead>
             <tr>
               <th>Token</th>
