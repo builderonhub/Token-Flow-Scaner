@@ -126,8 +126,81 @@ function initSchema() {
   `);
 
   seedDefaults();
+  migrateLegacyContentToEnglish();
 
   console.log("SQLite schema ready");
+}
+
+function containsNonAscii(value) {
+  return /[^\x00-\x7F]/.test(String(value || ""));
+}
+
+function migrateLegacyContentToEnglish() {
+  const migrationKey = "migration_english_content_v1";
+  const migration = db
+    .prepare("SELECT value FROM settings WHERE key = ?")
+    .get(migrationKey);
+
+  if (migration?.value === "complete") {
+    return;
+  }
+
+  const legacySignals = db
+    .prepare("SELECT id, reason FROM signals WHERE reason IS NOT NULL")
+    .all()
+    .filter((row) => containsNonAscii(row.reason));
+
+  const updateSignal = db.prepare(`
+    UPDATE signals
+    SET reason = ?
+    WHERE id = ?
+  `);
+
+  const updatePattern = db.prepare(`
+    UPDATE patterns
+    SET description = ?, updated_at = CURRENT_TIMESTAMP
+    WHERE name = ?
+  `);
+
+  const saveMigration = db.prepare(`
+    INSERT INTO settings (key, value, updated_at)
+    VALUES (?, 'complete', CURRENT_TIMESTAMP)
+    ON CONFLICT(key) DO UPDATE SET
+      value = 'complete',
+      updated_at = CURRENT_TIMESTAMP
+  `);
+
+  const migrate = db.transaction(() => {
+    for (const signal of legacySignals) {
+      updateSignal.run(
+        "Legacy signal explanation migrated to English. Review the recorded market metrics for details.",
+        signal.id
+      );
+    }
+
+    updatePattern.run(
+      "Strong volume and open interest growth, favoring momentum.",
+      "VOLUME_OI_BREAKOUT"
+    );
+    updatePattern.run(
+      "Extreme funding imbalance, looking for a reversal signal.",
+      "FUNDING_EXTREME_REVERSAL"
+    );
+    updatePattern.run(
+      "Price and volume confirm the same direction.",
+      "PRICE_VOLUME_CONFIRMATION"
+    );
+
+    saveMigration.run(migrationKey);
+  });
+
+  migrate();
+
+  if (legacySignals.length > 0) {
+    console.log(
+      `Migrated ${legacySignals.length} legacy signal explanations to English`
+    );
+  }
 }
 
 function seedDefaults() {
