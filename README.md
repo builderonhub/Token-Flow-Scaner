@@ -4,7 +4,7 @@ Alpha Flow Scanner is an open-source dashboard that uses public Binance Futures 
 
 > [!WARNING]
 > This project is intended for research and technical reference only. It is not financial advice, does not guarantee profits, and does not place trades automatically. Digital asset trading involves a high risk of capital loss.
-<img width="1476" height="818" alt="image" src="https://github.com/user-attachments/assets/78e90612-e41b-4694-8dba-73ede8b5b80c" />
+
 
 ## Features
 
