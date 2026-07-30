@@ -515,6 +515,13 @@ function formatPrice(value) {
 
   if (number === 0) return "-";
 
+  if (Math.abs(number) >= 1000) {
+    return number.toLocaleString(undefined, {
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2,
+    });
+  }
+
   return number.toLocaleString(undefined, {
     minimumFractionDigits: 4,
     maximumFractionDigits: 4,
